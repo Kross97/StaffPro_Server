@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "startServer": "ts-node server.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.18.0",
+    "eslint-config-node": "^4.1.0",
+    "nodemon": "^2.0.16",
+    "typescript": "^4.7.4"
+  }
+}
