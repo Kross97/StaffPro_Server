@@ -1,13 +1,14 @@
 import {IClientDuplex} from "../../../interfaces/IClientDuplex";
 import {AuthService} from "../../services/auth/AuthService";
 import {postMethodBodyHandler} from "../../../helpers/postMethodBodyHandler";
-import {ISignInRequest, IUserDto} from "../../../interfaces/auth/IAuths";
+import {IChangePassword, ISignInRequest, IUserDto} from "../../../interfaces/auth/IAuths";
 import {jsonSuccess} from "../../../helpers/responseHelpers/jsonSuccess";
 import {errorHandler} from "../../../helpers/responseHelpers/errorHandler";
 
 const dispatcherAuthApi = {
   'postsignup': 'signUp',
   'postsignin': 'signIn',
+  'postchangepassword': 'changePassword',
 };
 
 
@@ -37,6 +38,17 @@ export class AuthController {
        }
    }
 
+   static async changePassword(client: IClientDuplex) {
+       const body = await postMethodBodyHandler(client);
+       try {
+           const response = await AuthService.changePassword(body as IChangePassword);
+           jsonSuccess(client, response);
+       } catch (err) {
+           console.log("CONTROLLER_ERR CHANGE_PASSWORD", err);
+           errorHandler(client, err);
+       }
+   }
+
    static api(client: IClientDuplex, methodName: string) {
      const nameMethod = dispatcherAuthApi[`${client.request.method}${methodName}`.toLowerCase()];
      const currentMethod = this[nameMethod];
@@ -45,7 +57,7 @@ export class AuthController {
          currentMethod(client);
      } else {
          client.response.statusCode = 404;
-         client.response.end('Not Found');
+         client.response.end('Method Not Allowed');
      }
    }
 };

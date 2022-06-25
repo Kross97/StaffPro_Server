@@ -28,3 +28,9 @@ export interface ISignInRequest {
     email: string;
     password: string;
 }
+
+export interface IChangePassword {
+    email: string;
+    oldPassword: string;
+    password: string;
+}

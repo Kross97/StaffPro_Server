@@ -11,9 +11,11 @@ const dispatcherControllers = {
 export const routing = (req: IncomingMessage, res: ServerResponse) => {
     const fields = getNamesForReq(req);
     const clientDuplex: IClientDuplex = { request: req, response: res};
+
     try {
+       // console.log('API =>', dispatcherControllers[fields.controller]);
         const currentControllerApi = dispatcherControllers[fields.controller];
-        console.log('currentControllerApi =>', currentControllerApi);
+        //console.log('currentControllerApi =>', currentControllerApi);
         currentControllerApi(clientDuplex, fields.method);
     } catch {
         res.statusCode = 404;

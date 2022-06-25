@@ -9,12 +9,12 @@ export const postMethodBodyHandler = async (client: IClientDuplex): Promise<Reco
           });*/
 
           client.request.on('data', (chunk) => {
-              console.log('DATA CHUNK:', chunk);
+              //console.log('DATA CHUNK:', chunk);
               body += chunk.toString();
           });
 
           client.request.on('end', () => {
-              console.log('POST_REQUEST_BODY END:', body, );
+              //console.log('POST_REQUEST_BODY END:', body, );
               try {
                   const data = JSON.parse(body);
                   resolve(data);

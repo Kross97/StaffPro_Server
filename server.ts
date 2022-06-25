@@ -5,10 +5,9 @@ const http = require('http');
 const net = require('net');
 
 
-const PORT = 8010;
+const PORT = 8001;
 
 const httpServer = http.createServer((req, res) => {
-    console.log('origin =>', req.headers['origin']);
     acceptCors(req, res);
     routing(req, res);
 });

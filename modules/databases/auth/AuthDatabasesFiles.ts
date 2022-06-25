@@ -2,7 +2,8 @@ import {dirExist} from "../filesHelpers/dirExist";
 import {fileExist} from "../filesHelpers/fileExist";
 import {writeCurrentFile} from "../filesHelpers/writeCurrentFile";
 import * as path from "path";
-import {ISignInRequest, IUserDto, IUserResponse} from "../../../interfaces/auth/IAuths";
+import {IChangePassword, ISignInRequest, IUserDto, IUserResponse} from "../../../interfaces/auth/IAuths";
+import {writeStreamCurrentFiles} from "../filesHelpers/writeStreamCurrentFiles";
 const fsSync = require('fs');
 
 const usersDir = '../../../filesDB/users';
@@ -39,19 +40,38 @@ const checkUserExist = async (data: ISignInRequest): Promise<IUserDto> => {
      })
 
      stream.on('end', () => {
-         console.log('DATA_FILE', dataFile);
-
          let user;
          const allDataUsers: IUserDto[] = JSON.parse(dataFile[0]);
-         console.log('allDataUsers =>', allDataUsers);
          if (user = allDataUsers.find((user) => user.email === data.email && user.password === data.password)) {
-             console.log('USER =>', user);
              resolve(user);
          } else {
              reject({ message: 'User or password failed', status: 404});
          }
      });
  });
+};
+
+const changePasswordUser = async (data: IChangePassword): Promise<IUserDto> => {
+  const dataFile = [];
+  return new Promise((resolve, reject) => {
+      const stream = fsSync.createReadStream(path.resolve(__dirname, usersFile));
+
+      stream.on('data', (chunk) => {
+          dataFile.push(chunk.toString('utf-8'));
+      })
+
+      stream.on('end', async () => {
+          const allDataUsers: IUserDto[] = JSON.parse(dataFile[0]);
+          const userIndex = allDataUsers.findIndex((user) => user.email === data.email && user.password === data.oldPassword);
+          if(~userIndex) {
+              allDataUsers[userIndex] = {...allDataUsers[userIndex], password: data.password };
+             await writeStreamCurrentFiles(AuthDatabasesFiles.usersFile, allDataUsers);
+              resolve(allDataUsers[userIndex]);
+          } else {
+              reject({ message: 'User or old password wrong', status: 404 });
+          }
+      });
+  });
 };
 
 export class AuthDatabasesFiles {
@@ -84,4 +104,16 @@ export class AuthDatabasesFiles {
             throw err;
         }
     }
-}
+
+    static async changePassword(data: IChangePassword): Promise<IUserResponse> {
+        await dirExist(AuthDatabasesFiles.dirPath);
+        await fileExist(AuthDatabasesFiles.usersFile);
+        try {
+            const dataChecked = await changePasswordUser(data);
+            const {remember, password, ...rest} = dataChecked;
+            return rest;
+        } catch (err) {
+            throw err;
+        }
+    }
+ }

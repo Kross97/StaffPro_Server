@@ -17,6 +17,5 @@ export const getNamesForReq = (req: IncomingMessage): Names => {
       {...acc, [dispatcherName[index]]: item}
       :
       acc  , {} as Names);
-  console.log('NAMES =>', namesReq);
   return namesReq;
 };
