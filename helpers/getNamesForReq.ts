@@ -13,9 +13,10 @@ type Names = {
 }
 
 export const getNamesForReq = (req: IncomingMessage): Names => {
-  const namesReq =  req.url.slice(1).split('/').reduce((acc, item, index) => index < 3 ?
+  console.log('req.url.slice(1)', req.url.slice(1));
+  const namesReq =  req.url.slice(1).split('/').reduce((acc, item, index) => index < 2 ?
       {...acc, [dispatcherName[index]]: item}
       :
-      acc  , {} as Names);
+      {...acc, [dispatcherName[2]]: (acc[dispatcherName[2]] ?? '') + `${index === 2 ? '' : '/'}${item}`}  , {} as Names);
   return namesReq;
 };

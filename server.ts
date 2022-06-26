@@ -13,7 +13,7 @@ const httpServer = http.createServer((req, res) => {
 });
 
 const server = net.createServer((req) => {
-console.log('PROXY NET ADDRESS =>', req.address(), "REMOTE ADDRESS =>", req.remoteAddress);
+//console.log('PROXY NET ADDRESS =>', req.address(), "REMOTE ADDRESS =>", req.remoteAddress, "LOCAL_ADDRESS =>", req.localAddress);
 httpServer.emit('connection', req);
 });
 
@@ -22,5 +22,9 @@ server.listen(PORT, () => {
 });
 
 process.on('uncaughtException', (err) => {
-   console.log('ОШБИКА:', err);
+   console.log('ОШБИКА МАКРО ТАСКА:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+    console.log('ОШБИКА МИКРО ТАСКА:', err);
 });

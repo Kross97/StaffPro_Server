@@ -1,10 +1,10 @@
 import * as fs from "fs/promises";
 
-export const fileExist = async (path: string) => {
+export const fileExist = async (path: string, initialStruct?: object) => {
     try {
         const existFile = await fs.stat(path);
         //console.log("EXIST_FILE", existFile);
     } catch {
-            await fs.appendFile(path, JSON.stringify([]), 'utf8');
+            await fs.writeFile(path, JSON.stringify(initialStruct ?? []), 'utf8');
     }
 };

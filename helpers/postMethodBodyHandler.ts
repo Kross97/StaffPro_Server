@@ -1,6 +1,6 @@
 import {IClientDuplex} from "../interfaces/IClientDuplex";
 
-export const postMethodBodyHandler = async (client: IClientDuplex): Promise<Record<string, any> | undefined> => {
+export const postMethodBodyHandler = async <T = Record<string, any>>(client: IClientDuplex): Promise<T | undefined> => {
   let body = '';
   try {
     return await new Promise((resolve, reject) => {
