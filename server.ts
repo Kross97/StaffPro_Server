@@ -1,5 +1,6 @@
 import {routing} from "./modules/routing";
 import {acceptCors} from "./helpers/acceptCors";
+import {acceptOptions} from "./helpers/acceptOptions";
 
 const http = require('http');
 const net = require('net');
@@ -8,8 +9,12 @@ const net = require('net');
 const PORT = 8001;
 
 const httpServer = http.createServer((req, res) => {
-    acceptCors(req, res);
-    routing(req, res);
+    if(req.method === 'OPTIONS') {
+        acceptOptions(req, res);
+    } else {
+        acceptCors(req, res);
+        routing(req, res);
+    }
 });
 
 const server = net.createServer((req) => {

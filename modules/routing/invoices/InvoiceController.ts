@@ -10,7 +10,7 @@ type TMethodsName = Exclude<keyof typeof InvoiceController, 'prototype' | 'api' 
 const dispatcherInvoicehApi: Array<{ match: RegExp, method: TMethodsName}> = [
     { match: /^postAddInvoice$/i, method: 'addInvoice'},
     { match: /^getInvoices$/i, method: 'getInvoices'},
-    { match: /^deleteDelete(?<id>[\d]+)$/i, method: 'deleteInvoice'}
+    { match: /^deleteDelete\/(?<id>[\d]+)$/i, method: 'deleteInvoice'}
     ];
 
 export class InvoiceController {
@@ -35,28 +35,28 @@ export class InvoiceController {
      }
     }
 
-    static async deleteInvoice(client: IClientDuplex) {
+    static async deleteInvoice(client: IClientDuplex, pathParams: Record<'id', string>) {
         try {
-
+           const response = await InvoiceService.deleteInvoice(pathParams.id);
+           jsonSuccess(client, response);
         } catch (err) {
-
+          errorHandler(client, err);
         }
     }
 
     static api(client: IClientDuplex, methodName: string) {
         const nameMethod = `${client.request.method}${methodName}`.toLowerCase();
-        console.log('NAME_METHOD', nameMethod);
         let methodMatch: any = null;
         for (let pathData of dispatcherInvoicehApi) {
              if(pathData.match.test(nameMethod)) {
                  methodMatch = { method: pathData.method, matches: nameMethod.match(pathData.match)}
-                 //break;
+                 break;
              }
         };
         console.log('METHOD_MATCH', methodMatch);
-        const currentMethod = this[nameMethod];
+        const currentMethod = this[methodMatch.method];
         if(currentMethod) {
-            currentMethod(client);
+            currentMethod(client, methodMatch.matches.groups);
         } else {
             client.response.statusCode = 404;
             client.response.end('Method Not Allowed');

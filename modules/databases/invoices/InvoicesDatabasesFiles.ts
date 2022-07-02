@@ -28,13 +28,10 @@ const addInvoiceHandler = (body: IAddInvoice): Promise<IDataAllInvoicesWithCurre
       });
 
       streamFile.on('end', () => {
-         console.log('ALL_DATA_FILE', dataFile);
-         const allInvoice: IDataAllInvoices = JSON.parse(dataFile[0]);
-         console.log('ALL_INVOICE', allInvoice);
+         const allInvoice: IDataAllInvoices = JSON.parse(dataFile.join(''));
          const maxId = ++allInvoice.maxId;
          const currentInvoice = { id: maxId, ...body };
          allInvoice.entities.push(currentInvoice);
-         console.log('STRUCT_ALL_INVOICES', allInvoice);
          resolve({ data: allInvoice, current: currentInvoice});
       });
 
@@ -54,7 +51,7 @@ const getInvoices = () => {
        });
 
        streamRead.on('end', () => {
-          const allDataInvoices: IDataAllInvoices = JSON.parse(dataFile[0]);
+          const allDataInvoices: IDataAllInvoices = JSON.parse(dataFile.join(''));
           resolve(allDataInvoices.entities);
        });
 
@@ -62,6 +59,43 @@ const getInvoices = () => {
           rejection(err);
        });
     });
+};
+
+interface IDeleteInvoice {
+    deleted: IInvoice;
+    invoicesData: IDataAllInvoices;
+}
+
+const deleteInvoice = (id: string): Promise<IDeleteInvoice> => {
+  return new Promise((resolve, reject) => {
+     const dataFile = [];
+     // Для тестирования , внутренний буфер потока ограничен 2 байтами
+     const readStream = fs.createReadStream(InvoicesDatabasesFiles.invoicePathFile, { encoding: 'utf8', highWaterMark: 2});
+
+     readStream.on('data', (chunk) => {
+        console.log("CHUNK", chunk.toString());
+        dataFile.push(chunk.toString());
+     });
+
+     readStream.on('end', () => {
+         const allInvoices: IDataAllInvoices = JSON.parse(dataFile.join(''));
+         let deletedInvoice = null;
+         const clearedInvoiced = allInvoices.entities.filter((invoice) => {
+             if(invoice.id !== +id) {
+                 return true;
+             } else {
+                 deletedInvoice = invoice;
+                 return false;
+             }
+         });
+         if(deletedInvoice) {
+             resolve({ deleted: deletedInvoice, invoicesData: {...allInvoices, entities: clearedInvoiced} });
+         } else {
+             console.log('NOT INVOICE REMOVED');
+             reject({ status: 404, message: 'Invoice for removed, not exist'});
+         }
+     });
+  });
 };
 
 export class InvoicesDatabasesFiles {
@@ -74,12 +108,23 @@ export class InvoicesDatabasesFiles {
        await fileExist(InvoicesDatabasesFiles.invoicePathFile, InvoicesDatabasesFiles.initialDataFile);
        try {
            const invoice = await addInvoiceHandler(body);
-           console.log('INVOICE_DATA', invoice);
            await writeStreamCurrentFiles(InvoicesDatabasesFiles.invoicePathFile, invoice.data);
            return invoice.current;
        } catch (err) {
            throw err;
        }
+    }
+
+    static async deleteInvoice(id: string) {
+        await dirExist(InvoicesDatabasesFiles.invoicePathDir);
+        await fileExist(InvoicesDatabasesFiles.invoicePathFile);
+        try {
+          const deletedDataInvoice = await deleteInvoice(id);
+          await writeStreamCurrentFiles(InvoicesDatabasesFiles.invoicePathFile, deletedDataInvoice.invoicesData);
+          return deletedDataInvoice.deleted;
+        } catch (err) {
+            throw err;
+        }
     }
 
     static async getInvoices() {
