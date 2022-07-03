@@ -7,7 +7,7 @@ import {jsonSuccess} from "../../../helpers/responseHelpers/jsonSuccess";
 
 type TMethodsName = Exclude<keyof typeof InvoiceController, 'prototype' | 'api' >;
 
-const dispatcherInvoicehApi: Array<{ match: RegExp, method: TMethodsName}> = [
+const dispatcherInvoiceApi: Array<{ match: RegExp, method: TMethodsName}> = [
     { match: /^postAddInvoice$/i, method: 'addInvoice'},
     { match: /^getInvoices$/i, method: 'getInvoices'},
     { match: /^deleteDelete\/(?<id>[\d]+)$/i, method: 'deleteInvoice'}
@@ -47,7 +47,7 @@ export class InvoiceController {
     static api(client: IClientDuplex, methodName: string) {
         const nameMethod = `${client.request.method}${methodName}`.toLowerCase();
         let methodMatch: any = null;
-        for (let pathData of dispatcherInvoicehApi) {
+        for (let pathData of dispatcherInvoiceApi) {
              if(pathData.match.test(nameMethod)) {
                  methodMatch = { method: pathData.method, matches: nameMethod.match(pathData.match)}
                  break;

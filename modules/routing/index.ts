@@ -3,10 +3,12 @@ import {getNamesForReq} from "../../helpers/getNamesForReq";
 import {AuthController} from "./auth/AuthController";
 import {IClientDuplex} from "../../interfaces/IClientDuplex";
 import {InvoiceController} from "./invoices/InvoiceController";
+import {FileController} from "./file/FileController";
 
 const dispatcherControllers = {
     'auth': AuthController.api.bind(AuthController),
     'invoices': InvoiceController.api.bind(InvoiceController),
+    'files': FileController.api.bind(FileController),
 }
 
 
