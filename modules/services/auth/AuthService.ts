@@ -1,6 +1,7 @@
-import {AuthDatabasesFiles} from "../../databases/auth/AuthDatabasesFiles";
+import {AuthDatabasesFiles} from "../../databasesFiles/auth/AuthDatabasesFiles";
 import {IChangePassword, ISignInRequest, IUserDto} from "../../../interfaces/auth/IAuths";
 import {schemaBuilder, schemes, validator} from "../../../schemaValidator/schemaBuilder";
+import {AuthDatabasesMongo} from "../../databasesMongoDB/auth/AuthDatabasesMongo";
 
 const schemaSignUp = {
   'name': schemaBuilder(schemes.required),
@@ -22,7 +23,7 @@ const schemaChangePassword = {
 export class AuthService {
   static async signUp(body: IUserDto) {
     await validator(schemaSignUp, body);
-   return AuthDatabasesFiles.signUp(body);
+   return AuthDatabasesMongo.signUp(body);
   }
 
   static async signIn(body: ISignInRequest) {

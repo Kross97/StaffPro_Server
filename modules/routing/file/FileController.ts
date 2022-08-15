@@ -1,7 +1,7 @@
 import {IClientDuplex} from "../../../interfaces/IClientDuplex";
 import formidable from 'formidable';
 import fs from 'fs';
-import {dirExist} from "../../databases/filesHelpers/dirExist";
+import {dirExist} from "../../databasesFiles/filesHelpers/dirExist";
 import * as path from "path";
 
 type TMethodsName = Exclude<keyof typeof FileController, 'prototype' | 'api' >;

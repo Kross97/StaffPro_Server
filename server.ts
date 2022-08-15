@@ -1,6 +1,8 @@
 import {routing} from "./modules/routing";
 import {acceptCors} from "./helpers/acceptCors";
 import {acceptOptions} from "./helpers/acceptOptions";
+import {MongoConnectorBuilder} from "./modules/databasesMongoDB/connectorsDB/mongoDBConector/MongoConnector";
+import {ConnectorMyDB} from "./modules/databasesMongoDB/connectorsDB/mongoDBConector/connectors/ConnectorMyDB";
 
 const http = require('http');
 const net = require('net');
@@ -24,6 +26,16 @@ httpServer.emit('connection', req);
 
 server.listen(PORT, () => {
    console.log(`СЕРВЕР СЛУШАЕТ НА ${PORT} ПОРТУ`);
+    MongoConnectorBuilder.connect().then(() => {
+        console.log('БАЗА MONGODB ПОДКЛЮЧЕНА');
+        ConnectorMyDB.initialize();
+    }).catch(() => {
+        server.emit('close');
+    })
+});
+
+server.on('close', () => {
+   console.log('СЕРВЕР ОТКЛЮЧЕН');
 });
 
 process.on('uncaughtException', (err) => {

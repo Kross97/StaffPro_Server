@@ -1,5 +1,5 @@
 import {IAddInvoice, IInvoice} from "../../../interfaces/invoices/IInvoices";
-import {InvoicesDatabasesFiles} from "../../databases/invoices/InvoicesDatabasesFiles";
+import {InvoicesDatabasesFiles} from "../../databasesFiles/invoices/InvoicesDatabasesFiles";
 
 export class InvoiceService {
   static async addInvoice(body: IAddInvoice) {
