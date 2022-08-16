@@ -1,9 +1,9 @@
 import {MongoConnectorBuilder, MongoDB} from "../MongoConnector";
 import {Collection} from "mongodb";
 
-type colNames = 'authorization';
+type colNames = 'authorization' | 'invoices';
 
-const collectionsName: colNames[] = ['authorization'];
+const collectionsName: colNames[] = ['authorization', 'invoices'];
 
 export class ConnectorMyDB {
    static _authDb: MongoDB | null  = null;
@@ -15,7 +15,7 @@ export class ConnectorMyDB {
          collectionsName.forEach((col) => {
             this.collections.set(col, this._authDb.connectCollection(col));
          });
-         console.log(`КОЛЛЕКЦИИ ${collectionsName.join('  # ')} ИНИЦИАЛИЗИРОВАНЫ`);
+         console.log(`КОЛЛЕКЦИИ ${collectionsName.join(' ---#--- ')} ИНИЦИАЛИЗИРОВАНЫ`);
       }
    }
 

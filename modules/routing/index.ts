@@ -17,9 +17,9 @@ export const routing = (req: IncomingMessage, res: ServerResponse) => {
     const clientDuplex: IClientDuplex = { request: req, response: res};
     console.log('fields =>', fields);
     try {
-        //console.log('API =>', dispatcherControllers[fields.controller]);
+        console.log('API =>', dispatcherControllers[fields.controller]);
         const currentControllerApi = dispatcherControllers[fields.controller];
-        //console.log('currentControllerApi =>', currentControllerApi);
+        console.log('currentControllerApi =>', currentControllerApi);
         currentControllerApi(clientDuplex, fields.method);
     } catch {
         res.statusCode = 404;

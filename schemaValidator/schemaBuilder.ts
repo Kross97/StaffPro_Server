@@ -22,31 +22,30 @@ export const validator = async (schema: Record<string, any> , body: Record<strin
     const schemaKeys = Object.keys(schema);
     let res: boolean | Promise<{ message: string, status: number}> = true;
 
-    schemaFor: for (let keySchemaIndex = 0; keySchemaIndex < schemaKeys.length; keySchemaIndex++) {
+    for (let keySchemaIndex = 0; keySchemaIndex < schemaKeys.length; keySchemaIndex++) {
         if(!(schemaKeys[keySchemaIndex] in body)) {
             res = Promise.reject({ message: `Field ${schemaKeys[keySchemaIndex]} is not exist in body`, status: 400})
-            break schemaFor;
+            return res;
         }
-    }
-    if(res !== true) {
-        return res;
     }
 
     for (let i = 0; i < entriesObj.length; i++) {
         const [key, value] = entriesObj[i];
         if (!(key in schema)) {
             //res = Promise.reject({ message: `${key} Field not found`, status: 400});
-            //break;
+            //return res;
         } else {
             try {
                 res = await schema[key](value);
+                return res;
             } catch (err) {
                 if ('messageSchema' in err) {
                     res = Promise.reject({message: `${key} ${err.messageSchema}`, status: 400});
                 } else {
                     res = Promise.reject({message: 'Server validation error', status: 500})
                 }
-                break;
+
+                return res;
             }
         }
     }

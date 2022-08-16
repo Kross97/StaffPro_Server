@@ -7,7 +7,7 @@ type: 'paid' | 'due' | 'unpaid' | 'archived';
 }
 
 export interface IInvoice {
-    id: number;
+    id: number | string;
     title: string;
     description: string;
     price: string;

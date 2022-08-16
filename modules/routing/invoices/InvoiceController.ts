@@ -10,7 +10,7 @@ type TMethodsName = Exclude<keyof typeof InvoiceController, 'prototype' | 'api' 
 const dispatcherInvoiceApi: Array<{ match: RegExp, method: TMethodsName}> = [
     { match: /^postAddInvoice$/i, method: 'addInvoice'},
     { match: /^getInvoices$/i, method: 'getInvoices'},
-    { match: /^deleteDelete\/(?<id>[\d]+)$/i, method: 'deleteInvoice'}
+    { match: /^deleteDelete\/(?<id>[\d\w]+)$/i, method: 'deleteInvoice'}
     ];
 
 export class InvoiceController {
@@ -53,7 +53,7 @@ export class InvoiceController {
                  break;
              }
         };
-        console.log('METHOD_MATCH', methodMatch);
+
         const currentMethod = this[methodMatch.method];
         if(currentMethod) {
             currentMethod(client, methodMatch.matches.groups);
