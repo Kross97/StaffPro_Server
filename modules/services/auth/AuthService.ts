@@ -28,11 +28,11 @@ export class AuthService {
 
   static async signIn(body: ISignInRequest) {
     await validator(schemaSignIn, body);
-    return AuthDatabasesFiles.signIn(body);
+    return AuthDatabasesMongo.signIn(body);
   }
 
   static async changePassword(body: IChangePassword) {
       await validator(schemaChangePassword, body);
-     return AuthDatabasesFiles.changePassword(body);
+     return AuthDatabasesMongo.changePassword(body);
   }
 };

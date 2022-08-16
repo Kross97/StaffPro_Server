@@ -8,7 +8,7 @@ import {errorHandler} from "../../../helpers/responseHelpers/errorHandler";
 const dispatcherAuthApi = {
   'postsignup': 'signUp',
   'postsignin': 'signIn',
-  'postchangepassword': 'changePassword',
+  'putchangepassword': 'changePassword',
 };
 
 
