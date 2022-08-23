@@ -4,7 +4,7 @@
     "module": "commonjs", //импорт модулей преобразуется в commonjs (node require)
     "sourceMap": true, //генерировать sourceMaps, нужно для отладки
     //"outDir": "build/src", //проект билдится из папки /src в папку /build/src
-    "rootDir": "src",
+    "rootDir": "./",
     // для импортов по умолчанию
     "allowSyntheticDefaultImports": true,
     // без этого флага не импортировался моудль fs по умолчанию
